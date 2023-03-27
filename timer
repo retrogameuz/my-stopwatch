@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Простой секундомер</title>
+  </head>
+  <body>
+    <h1>Простой секундомер</h1>
+    <p id="timer">00:00:00</p>
+    <button id="startStopButton" onclick="startStop()">Старт/Стоп (пробел)</button>
+    <button id="resetButton" onclick="reset()">Сброс (esc)</button>
+    <script>
+      var startTime, elapsedTime = 0, timerInterval;
+
+      function pad(n) {
+        return (n < 10) ? ("0" + n) : n;
+      }
+
+      function updateTime() {
+        var time = new Date(Date.now() - startTime + elapsedTime);
+        var hours = pad(time.getUTCHours());
+        var minutes = pad(time.getUTCMinutes());
+        var seconds = pad(time.getUTCSeconds());
+        document.getElementById("timer").innerHTML = hours + ":" + minutes + ":" + seconds;
+      }
+
+      function startStop() {
+        if (timerInterval) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          elapsedTime += Date.now() - startTime;
+        } else {
+          startTime = Date.now();
+          timerInterval = setInterval(updateTime, 10);
+        }
+      }
+
+      function reset() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        elapsedTime = 0;
+        document.getElementById("timer").innerHTML = "00:00:00";
+      }
+
+      document.onkeydown = function(event) {
+        if (event.code === "Space") {
+          startStop();
+        } else if (event.code === "Escape") {
+          reset();
+        }
+      };
+    </script>
+  </body>
+</html>
